@@ -1,4 +1,4 @@
-import { map, collect, first, filter, fromCallback } from './index'
+import { map, collect, first, filter, fromCallback, fromEvent } from './index'
 
 async function* testIterator(num): AsyncIterableIterator<number> {
   for (let i = 0; i < num; i++) {
@@ -99,5 +99,24 @@ describe('fromCallback', () => {
 
     const results = await first(collect(fromCallback(doThing)))
     expect(results).toEqual([1, 2])
+  })
+})
+
+describe('fromEvent', () => {
+  it('should start listening events from event target', () => {
+    let sendEvent
+    const eventTarget: EventTarget = {
+      addEventListener: jest.fn((name, listener) => {
+        sendEvent = listener
+      }),
+      removeEventListener: jest.fn(),
+      dispatchEvent: jest.fn()
+    }
+
+    const event = new Event('foo')
+    const listener = first(fromEvent(eventTarget, 'foo'))
+    sendEvent(event)
+
+    return listener.then(receivedEvent => expect(receivedEvent).toEqual(event))
   })
 })

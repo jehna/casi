@@ -38,8 +38,8 @@ export async function first<T>(iterator: AsyncIterableIterator<T>): Promise<T> {
 export async function* fromCallback<T>(
   callbackFunction: (callback: (err?: any, val?: T) => any) => any
 ): AsyncIterableIterator<T> {
-  let resolve
-  let reject
+  let resolve: (value?: T | PromiseLike<T>) => void
+  let reject: (reason?: any) => void
 
   callbackFunction((err, val) => {
     if (err) {
@@ -54,5 +54,27 @@ export async function* fromCallback<T>(
       resolve = newResolve
       reject = newReject
     })
+  }
+}
+
+export async function* fromEvent(
+  eventSource: EventTarget,
+  eventName: string
+): AsyncIterableIterator<Event> {
+  let resolve: (value: Event) => void
+  const listener = (val: Event) => {
+    resolve(val)
+  }
+
+  eventSource.addEventListener(eventName, listener)
+
+  try {
+    while (true) {
+      yield await new Promise(newResolve => {
+        resolve = newResolve
+      })
+    }
+  } finally {
+    eventSource.removeEventListener(eventName, listener)
   }
 }
