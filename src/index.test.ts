@@ -1,10 +1,12 @@
-import { map, collect, first, filter } from './index'
+import { map, collect, first, filter, fromCallback } from './index'
 
 async function* testIterator(num): AsyncIterableIterator<number> {
   for (let i = 0; i < num; i++) {
     yield await Promise.resolve(i)
   }
 }
+
+const nop = () => Promise.resolve()
 
 describe('testIterator', () => {
   it('should iterate through promises', async () => {
@@ -71,5 +73,31 @@ describe('filter', () => {
       collect(filter(i => i % 2 === 0, testIterator(10)))
     )
     expect(results).toEqual([0, 2, 4, 6, 8])
+  })
+})
+
+describe('fromCallback', () => {
+  it('should callback(err, value) format to an iterator', async () => {
+    const doThing = async (cb: (err: Error, value: number) => void) => {
+      await nop()
+      cb(null, 1)
+    }
+
+    const results = await first(fromCallback(doThing))
+    expect(results).toEqual(1)
+  })
+
+  it('should terminate if the callback results in an error', async () => {
+    const doThing = async (cb: (err: Error, value?: number) => void) => {
+      await nop()
+      cb(null, 1)
+      await nop()
+      cb(null, 2)
+      await nop()
+      cb(new Error('end'))
+    }
+
+    const results = await first(collect(fromCallback(doThing)))
+    expect(results).toEqual([1, 2])
   })
 })
