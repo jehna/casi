@@ -1,4 +1,12 @@
-import { map, collect, first, filter, fromCallback, fromEvent } from './index'
+import {
+  map,
+  collect,
+  first,
+  filter,
+  fromCallback,
+  fromEvent,
+  merge
+} from './index'
 
 async function* testIterator(num): AsyncIterableIterator<number> {
   for (let i = 0; i < num; i++) {
@@ -118,5 +126,29 @@ describe('fromEvent', () => {
     sendEvent(event)
 
     return listener.then(receivedEvent => expect(receivedEvent).toEqual(event))
+  })
+})
+
+describe('merge', () => {
+  it('should work like an identity function if one stream is passed', async () => {
+    const stream = testIterator(2)
+    const merged = merge([stream])
+    const result = await first(collect(merged))
+
+    expect(result).toEqual([0, 1])
+  })
+
+  it('should output all values of all iterators passed', async () => {
+    const stream1 = testIterator(2)
+    const stream2 = map(i => i + 2, testIterator(2))
+    const merged = merge([stream1, stream2])
+    const result = await first(collect(merged))
+
+    // In our case the result does not come in numerical order
+    expect(result).toContain(0)
+    expect(result).toContain(1)
+    expect(result).toContain(2)
+    expect(result).toContain(3)
+    expect(result.length).toEqual(4)
   })
 })
