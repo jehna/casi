@@ -5,7 +5,8 @@ import {
   filter,
   fromCallback,
   fromEvent,
-  merge
+  merge,
+  scan
 } from './index'
 
 async function* testIterator(num): AsyncIterableIterator<number> {
@@ -150,5 +151,14 @@ describe('merge', () => {
     expect(result).toContain(2)
     expect(result).toContain(3)
     expect(result.length).toEqual(4)
+  })
+})
+
+describe('scan', () => {
+  it('should collect the value and pass the aggregated value', async () => {
+    const stream = scan(10, (a, b) => a + b, testIterator(5))
+    const result = await first(collect(stream))
+
+    expect(result).toEqual([10, 11, 13, 16, 20])
   })
 })

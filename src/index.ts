@@ -121,3 +121,15 @@ export async function* merge<T>(
     }
   }
 }
+
+export async function* scan<In, Out>(
+  initialValue: Out,
+  callback: (currentValue: Out, input: In) => Out,
+  iterator: AsyncIterableIterator<In>
+): AsyncIterableIterator<Out> {
+  let currentValue = initialValue
+  for await (const value of iterator) {
+    currentValue = callback(currentValue, value)
+    yield currentValue
+  }
+}
