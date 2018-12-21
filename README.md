@@ -17,7 +17,7 @@ library in your project:
 
 ```javascript
 // Using require
-const {fromEvent} = require('casi')
+const { fromEvent } = require('casi')
 
 const iterator = fromEvent(document, 'click')
 
