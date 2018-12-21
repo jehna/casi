@@ -6,7 +6,8 @@ import {
   fromCallback,
   fromEvent,
   merge,
-  scan
+  scan,
+  closer
 } from './index'
 
 async function* testIterator(num): AsyncIterableIterator<number> {
@@ -160,5 +161,39 @@ describe('scan', () => {
     const result = await first(collect(stream))
 
     expect(result).toEqual([10, 11, 13, 16, 20])
+  })
+})
+
+describe('closer', () => {
+  it('should close a stream when close is called', async () => {
+    const iterator = closer()
+    const results = first(collect(iterator))
+    iterator.close()
+    expect(await results).toEqual([])
+  })
+
+  it('should close a stream when close is called', async () => {
+    const iterator = closer()
+    const results = first(collect(iterator))
+    iterator.close()
+    expect(await results).toEqual([])
+  })
+
+  it('should close the whole merged stream', async () => {
+    const iter1 = closer()
+    async function* dummyIterator() {
+      let i = 0
+      yield ++i
+      yield ++i
+      iter1.close()
+      yield ++i
+      yield ++i
+    }
+
+    const iter2 = dummyIterator()
+    const conbined = merge([iter1, iter2])
+
+    const results = first(collect(conbined))
+    expect(await results).toEqual([1, 2])
   })
 })
