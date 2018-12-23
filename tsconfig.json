@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
-    "target": "es2015",
+    "target": "es2018",
+    "outDir": "build",
     "moduleResolution": "node",
-    "module": "commonjs",
     "lib": ["dom", "es2015", "esnext.asynciterable"]
   }
 }
