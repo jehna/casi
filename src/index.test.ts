@@ -76,6 +76,11 @@ describe('map', () => {
     )
     expect(results).toEqual([2, 3, 4])
   })
+
+  it('should work with constant values', async () => {
+    const results = await first(collect(map('foo', testIterator(3))))
+    expect(results).toEqual(['foo', 'foo', 'foo'])
+  })
 })
 
 describe('filter', () => {

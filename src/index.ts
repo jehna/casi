@@ -1,9 +1,13 @@
 export async function* map<T, K>(
-  callback: (input: T) => K,
+  mapper: ((input: T) => K) | K,
   iterator: AsyncIterableIterator<T>
 ): AsyncIterableIterator<K> {
   for await (let result of iterator) {
-    yield await callback(result)
+    if (mapper instanceof Function) {
+      yield await mapper(result)
+    } else {
+      yield mapper
+    }
   }
 }
 
