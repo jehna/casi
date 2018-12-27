@@ -8,15 +8,11 @@ import {
   merge,
   scan,
   closer,
-  take
+  take,
+  fromArray
 } from './index'
 
-async function* testIterator(num): AsyncIterableIterator<number> {
-  for (let i = 0; i < num; i++) {
-    yield await Promise.resolve(i)
-  }
-}
-
+const testIterator = (num: number) => fromArray(Array(num).keys())
 const nop = () => Promise.resolve()
 
 describe('testIterator', () => {
@@ -220,5 +216,40 @@ describe('take', () => {
 
     const result = await first(collect(take(10, forever())))
     expect(result).toEqual([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+  })
+})
+
+describe('fromArray', () => {
+  it('should return no results if empty array is provided', async () => {
+    const result = await first(fromArray([]))
+    expect(result).toBe(undefined)
+  })
+
+  it('should work with a single item', async () => {
+    const result = await first(collect(fromArray(['foo'])))
+    expect(result).toEqual(['foo'])
+  })
+
+  it('should work with multiple items', async () => {
+    const input = [1, 2, 5, 6, 7, 8, 22, 44, 67]
+    const result = await first(collect(fromArray(input)))
+    expect(result).toEqual(input)
+  })
+
+  it('should work with iterables', async () => {
+    function* iter() {
+      let i = 10
+      while (--i) {
+        yield i
+      }
+    }
+
+    const result = await first(collect(fromArray(iter())))
+    expect(result).toEqual([9, 8, 7, 6, 5, 4, 3, 2, 1])
+  })
+
+  it('should work with array.keys iterable', async () => {
+    const result = await first(collect(fromArray(Array(3).keys())))
+    expect(result).toEqual([0, 1, 2])
   })
 })
