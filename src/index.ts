@@ -153,3 +153,14 @@ export function closer(): AsyncIterableIteratorWithClose {
   }
   return iterator
 }
+
+export async function* take<T>(
+  count: number,
+  iterator: AsyncIterableIterator<T>
+): AsyncIterableIterator<T> {
+  let i = 0
+  for await (const result of iterator) {
+    yield result
+    if (++i >= count) return
+  }
+}
