@@ -1,27 +1,8 @@
-import { fromEvent, merge, scan, closer, take, fromArray, zip } from './index'
+import { merge, scan, closer, take, fromArray, zip } from './index'
 import { testIterator } from './test-utils'
 import map from './map'
 import collect from './collect'
 import first from './first'
-
-describe('fromEvent', () => {
-  it('should start listening events from event target', () => {
-    let sendEvent
-    const eventTarget: EventTarget = {
-      addEventListener: jest.fn((name, listener) => {
-        sendEvent = listener
-      }),
-      removeEventListener: jest.fn(),
-      dispatchEvent: jest.fn()
-    }
-
-    const event = new Event('foo')
-    const listener = first(fromEvent(eventTarget, 'foo'))
-    sendEvent(event)
-
-    return listener.then(receivedEvent => expect(receivedEvent).toEqual(event))
-  })
-})
 
 describe('merge', () => {
   it('should work like an identity function if one stream is passed', async () => {
