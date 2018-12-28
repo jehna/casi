@@ -15,16 +15,6 @@ import collect from './collect'
 
 const nop = () => Promise.resolve()
 
-describe('testIterator', () => {
-  it('should iterate through promises', async () => {
-    const results = []
-    for await (let i of testIterator(5)) {
-      results.push(i)
-    }
-    expect(results).toEqual([0, 1, 2, 3, 4])
-  })
-})
-
 describe('first', () => {
   it('should return the first occurrance as promise', async () => {
     const result = await first(testIterator(100))
