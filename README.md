@@ -47,7 +47,7 @@ printOddDoubles([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
 // Prints 2, 6, 10, 14, 18
 ```
 
-**[See live example!](https://codesandbox.io/s/r7jrom8ywp)**
+**[▶️ See live example!](https://codesandbox.io/s/r7jrom8ywp)**
 
 This example takes an array, converts it to an asynchronous iterator with
 `fromArray`, filters out even values with `filter`, doubles all the remaining
@@ -81,7 +81,7 @@ const assignResult = pipe(
 assignResult(stream)
 ```
 
-**[See live example!](https://codesandbox.io/s/4oqqyk8o7)**
+**[▶️ ️️See live example!](https://codesandbox.io/s/4oqqyk8o7)**
 
 This example first takes `click` events from buttons with ids `plus` and
 `minus`, and converts them to `AsyncIterableIterator` streams with `fromEvent`
