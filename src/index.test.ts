@@ -1,17 +1,8 @@
-import { scan, closer, take, fromArray, zip } from './index'
+import { closer, take, fromArray, zip } from './index'
 import { testIterator } from './test-utils'
 import collect from './collect'
 import first from './first'
 import merge from './merge'
-
-describe('scan', () => {
-  it('should collect the value and pass the aggregated value', async () => {
-    const stream = scan(10, (a, b) => a + b, testIterator(5))
-    const result = await collect(stream)
-
-    expect(result).toEqual([10, 11, 13, 16, 20])
-  })
-})
 
 describe('closer', () => {
   it('should close a stream when close is called', async () => {
