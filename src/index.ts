@@ -1,6 +1,7 @@
 export { default as assign } from './assign'
 export { default as closer } from './closer'
 export { default as collect } from './collect'
+export { default as compose } from './compose'
 export { default as filter } from './filter'
 export { default as first } from './first'
 export { default as fromArray } from './from-array'
