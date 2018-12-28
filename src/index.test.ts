@@ -1,5 +1,4 @@
 import {
-  collect,
   first,
   fromCallback,
   fromEvent,
@@ -12,6 +11,7 @@ import {
 } from './index'
 import { testIterator } from './test-utils'
 import map from './map'
+import collect from './collect'
 
 const nop = () => Promise.resolve()
 
@@ -22,22 +22,6 @@ describe('testIterator', () => {
       results.push(i)
     }
     expect(results).toEqual([0, 1, 2, 3, 4])
-  })
-})
-
-describe('collect', () => {
-  it('should collect all values from iterator and only call the callback on end', async () => {
-    for await (let i of collect(testIterator(3))) {
-      expect(i).toEqual([0, 1, 2])
-    }
-  })
-
-  it('should only call itself once', async () => {
-    const lock = jest.fn()
-    for await (let i of collect(testIterator(100))) {
-      lock()
-    }
-    expect(lock).toBeCalledTimes(1)
   })
 })
 
@@ -73,15 +57,16 @@ describe('fromCallback', () => {
 
   it('should terminate if the callback results in an error', async () => {
     const doThing = async (cb: (err: Error, value?: number) => void) => {
-      await nop()
       cb(null, 1)
       await nop()
       cb(null, 2)
       await nop()
       cb(new Error('end'))
+      await nop()
+      cb(null, 3)
     }
 
-    const results = await first(collect(fromCallback(doThing)))
+    const results = await collect(fromCallback(doThing))
     expect(results).toEqual([1, 2])
   })
 })
@@ -109,7 +94,7 @@ describe('merge', () => {
   it('should work like an identity function if one stream is passed', async () => {
     const stream = testIterator(2)
     const merged = merge([stream])
-    const result = await first(collect(merged))
+    const result = await collect(merged)
 
     expect(result).toEqual([0, 1])
   })
@@ -118,7 +103,7 @@ describe('merge', () => {
     const stream1 = testIterator(2)
     const stream2 = map(i => i + 2, testIterator(2))
     const merged = merge([stream1, stream2])
-    const result = await first(collect(merged))
+    const result = await collect(merged)
 
     // In our case the result does not come in numerical order
     expect(result).toContain(0)
@@ -132,7 +117,7 @@ describe('merge', () => {
 describe('scan', () => {
   it('should collect the value and pass the aggregated value', async () => {
     const stream = scan(10, (a, b) => a + b, testIterator(5))
-    const result = await first(collect(stream))
+    const result = await collect(stream)
 
     expect(result).toEqual([10, 11, 13, 16, 20])
   })
@@ -141,14 +126,14 @@ describe('scan', () => {
 describe('closer', () => {
   it('should close a stream when close is called', async () => {
     const iterator = closer()
-    const results = first(collect(iterator))
+    const results = collect(iterator)
     iterator.close()
     expect(await results).toEqual([])
   })
 
   it('should close a stream when close is called', async () => {
     const iterator = closer()
-    const results = first(collect(iterator))
+    const results = collect(iterator)
     iterator.close()
     expect(await results).toEqual([])
   })
@@ -167,14 +152,14 @@ describe('closer', () => {
     const iter2 = dummyIterator()
     const conbined = merge([iter1, iter2])
 
-    const results = first(collect(conbined))
+    const results = collect(conbined)
     expect(await results).toEqual([1, 2])
   })
 })
 
 describe('take', () => {
   it('should take n first items from stream', async () => {
-    const result = await first(collect(take(4, testIterator(10))))
+    const result = await collect(take(4, testIterator(10)))
     expect(result).toEqual([0, 1, 2, 3])
   })
 
@@ -186,7 +171,7 @@ describe('take', () => {
       }
     }
 
-    const result = await first(collect(take(10, forever())))
+    const result = await collect(take(10, forever()))
     expect(result).toEqual([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
   })
 })
@@ -198,13 +183,13 @@ describe('fromArray', () => {
   })
 
   it('should work with a single item', async () => {
-    const result = await first(collect(fromArray(['foo'])))
+    const result = await collect(fromArray(['foo']))
     expect(result).toEqual(['foo'])
   })
 
   it('should work with multiple items', async () => {
     const input = [1, 2, 5, 6, 7, 8, 22, 44, 67]
-    const result = await first(collect(fromArray(input)))
+    const result = await collect(fromArray(input))
     expect(result).toEqual(input)
   })
 
@@ -216,12 +201,12 @@ describe('fromArray', () => {
       }
     }
 
-    const result = await first(collect(fromArray(iter())))
+    const result = await collect(fromArray(iter()))
     expect(result).toEqual([9, 8, 7, 6, 5, 4, 3, 2, 1])
   })
 
   it('should work with array.keys iterable', async () => {
-    const result = await first(collect(fromArray(Array(3).keys())))
+    const result = await collect(fromArray(Array(3).keys()))
     expect(result).toEqual([0, 1, 2])
   })
 })
@@ -230,7 +215,7 @@ describe('zip', () => {
   it('pairwise combines values from two streams using given combinator function', async () => {
     const s1 = fromArray([1, 2, 3])
     const s2 = fromArray(['a', 'b', 'c'])
-    const result = await first(collect(zip(s1, s2, (x, y) => x + y)))
+    const result = await collect(zip(s1, s2, (x, y) => x + y))
 
     expect(result).toEqual(['1a', '2b', '3c'])
   })
@@ -238,7 +223,7 @@ describe('zip', () => {
   it('should zip to array if no combinator is given', async () => {
     const s1 = fromArray([1, 2, 3])
     const s2 = fromArray(['a', 'b', 'c'])
-    const result = await first(collect(zip(s1, s2)))
+    const result = await collect(zip(s1, s2))
 
     expect(result).toEqual([[1, 'a'], [2, 'b'], [3, 'c']])
   })
@@ -246,7 +231,7 @@ describe('zip', () => {
   it('completes as soon as possible', async () => {
     const s1 = fromArray([1])
     const s2 = fromArray(['a', 'b', 'c'])
-    const result = await first(collect(zip(s1, s2)))
+    const result = await collect(zip(s1, s2))
 
     expect(result).toEqual([[1, 'a']])
   })
@@ -258,7 +243,7 @@ describe('zip', () => {
       }
     }
 
-    const result = await first(collect(zip(forever(), fromArray([1, 2, 3]))))
+    const result = await collect(zip(forever(), fromArray([1, 2, 3])))
     expect(result).toEqual([[true, 1], [true, 2], [true, 3]])
   })
 
@@ -269,7 +254,7 @@ describe('zip', () => {
       }
     }
 
-    const result = await first(collect(zip(fromArray([1, 2, 3]), forever())))
+    const result = await collect(zip(fromArray([1, 2, 3]), forever()))
     expect(result).toEqual([[1, 'foo'], [2, 'foo'], [3, 'foo']])
   })
 })
