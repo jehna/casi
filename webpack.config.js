@@ -6,7 +6,8 @@ module.exports = {
     path: path.resolve(__dirname, 'build'),
     filename: 'casi.js',
     library: 'casi',
-    libraryTarget: 'umd'
+    libraryTarget: 'umd',
+    globalObject: 'this'
   },
   module: {
     rules: [
