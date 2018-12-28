@@ -2,7 +2,7 @@ interface AsyncIterableIteratorWithClose extends AsyncIterableIterator<any> {
   close: () => void
 }
 
-export function closer(): AsyncIterableIteratorWithClose {
+export default function closer(): AsyncIterableIteratorWithClose {
   let close
   const promise: Promise<IteratorResult<any>> = new Promise(
     (resolve, reject) => {

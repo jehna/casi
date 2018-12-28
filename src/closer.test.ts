@@ -1,6 +1,6 @@
-import { closer } from './index'
 import collect from './collect'
 import merge from './merge'
+import closer from './closer'
 
 describe('closer', () => {
   it('should close a stream when close is called', async () => {
