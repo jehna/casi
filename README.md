@@ -28,6 +28,37 @@ import { fromEvent } from 'casi'
 const iterator = fromEvent(document, 'click')
 ```
 
+### Example: Simple map and filter
+
+You can use simple functions like `map` and `filter` to manipulate your
+asynchronous iterators:
+
+```js
+import { pipe, assign, fromArray, map, filter } from 'casi'
+
+const printOddDoubles = pipe(
+  fromArray,
+  filter(x => x % 2 === 1),
+  map(x => x + x),
+  assign(console, 'log')
+)
+
+printOddDoubles([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+// Prints 2, 6, 10, 14, 18
+```
+
+[See live example!](https://codesandbox.io/s/r7jrom8ywp)
+
+This example takes an array, converts it to an asynchronous iterator with
+`fromArray`, filters out even values with `filter`, doubles all the remaining
+values with `map` and finally prints the values out to your console using
+`assign` setter.
+
+Notice that all of these functions are _composable_, which means you can compose
+higher-order functions using tools like `compose` or `pipe`. In our example we
+use `pipe` (which is a normal `compose`, but the order of the arguments is
+reversed) to create a general function called `printOddDoubles`.
+
 ### Example: Simple counter
 
 Implementing a simple counter in casi can be done in few lines. Assuming you
