@@ -1,7 +1,6 @@
 import {
   collect,
   first,
-  filter,
   fromCallback,
   fromEvent,
   merge,
@@ -58,15 +57,6 @@ describe('first', () => {
     const result = await first(iter())
     expect(result).toEqual(1)
     expect(spy).not.toHaveBeenCalled()
-  })
-})
-
-describe('filter', () => {
-  it('should exclude falsy values from iterator', async () => {
-    const results = await first(
-      collect(filter(i => i % 2 === 0, testIterator(10)))
-    )
-    expect(results).toEqual([0, 2, 4, 6, 8])
   })
 })
 

@@ -1,12 +1,3 @@
-export async function* filter<T>(
-  callback: (input: T) => boolean,
-  iterator: AsyncIterableIterator<T>
-): AsyncIterableIterator<T> {
-  for await (let result of iterator) {
-    if (callback(result)) yield result
-  }
-}
-
 export async function* collect<T>(
   iterator: AsyncIterableIterator<T>
 ): AsyncIterableIterator<T[]> {
