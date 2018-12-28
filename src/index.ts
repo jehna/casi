@@ -1,9 +1,3 @@
-export async function first<T>(iterator: AsyncIterableIterator<T>): Promise<T> {
-  for await (let result of iterator) {
-    return result
-  }
-}
-
 export async function* fromCallback<T>(
   callbackFunction: (callback: (err?: any, val?: T) => any) => any
 ): AsyncIterableIterator<T> {

@@ -1,5 +1,4 @@
 import {
-  first,
   fromCallback,
   fromEvent,
   merge,
@@ -12,27 +11,9 @@ import {
 import { testIterator } from './test-utils'
 import map from './map'
 import collect from './collect'
+import first from './first'
 
 const nop = () => Promise.resolve()
-
-describe('first', () => {
-  it('should return the first occurrance as promise', async () => {
-    const result = await first(testIterator(100))
-    expect(result).toEqual(0)
-  })
-
-  it('should not run the anything else than the first iteration', async () => {
-    const spy = jest.fn()
-    const iter = async function*() {
-      yield 1
-      spy()
-      yield 2
-    }
-    const result = await first(iter())
-    expect(result).toEqual(1)
-    expect(spy).not.toHaveBeenCalled()
-  })
-})
 
 describe('fromCallback', () => {
   it('should callback(err, value) format to an iterator', async () => {
