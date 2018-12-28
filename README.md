@@ -78,6 +78,17 @@ All casi functions should be covered by automation tests.
 This project is meant to be a collection of helper functions to work with
 JavaScript's asynchronous iterators.
 
+## Motivation
+
+This project aims to make the native JavaScript asynchronous iterators more
+usable while offering a bunch of functions that help to handle the concept in
+your code.
+
+The project takes heavy inspiration from existing stream-handling libraries like
+[bacon.js](https://baconjs.github.io/) and [RxJS](http://reactivex.io/rxjs), so
+if you're familiar with these concepts, you should have easy time following the
+functions found in casi.
+
 ## Contributing
 
 If you'd like to contribute, please fork the repository and use a feature
