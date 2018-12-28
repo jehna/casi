@@ -1,7 +1,7 @@
-import { closer, fromArray, zip } from './index'
+import { closer, zip } from './index'
 import collect from './collect'
-import first from './first'
 import merge from './merge'
+import fromArray from './from-array'
 
 describe('closer', () => {
   it('should close a stream when close is called', async () => {
@@ -34,41 +34,6 @@ describe('closer', () => {
 
     const results = collect(conbined)
     expect(await results).toEqual([1, 2])
-  })
-})
-
-describe('fromArray', () => {
-  it('should return no results if empty array is provided', async () => {
-    const result = await first(fromArray([]))
-    expect(result).toBe(undefined)
-  })
-
-  it('should work with a single item', async () => {
-    const result = await collect(fromArray(['foo']))
-    expect(result).toEqual(['foo'])
-  })
-
-  it('should work with multiple items', async () => {
-    const input = [1, 2, 5, 6, 7, 8, 22, 44, 67]
-    const result = await collect(fromArray(input))
-    expect(result).toEqual(input)
-  })
-
-  it('should work with iterables', async () => {
-    function* iter() {
-      let i = 10
-      while (--i) {
-        yield i
-      }
-    }
-
-    const result = await collect(fromArray(iter()))
-    expect(result).toEqual([9, 8, 7, 6, 5, 4, 3, 2, 1])
-  })
-
-  it('should work with array.keys iterable', async () => {
-    const result = await collect(fromArray(Array(3).keys()))
-    expect(result).toEqual([0, 1, 2])
   })
 })
 

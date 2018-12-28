@@ -18,14 +18,6 @@ export function closer(): AsyncIterableIteratorWithClose {
   return iterator
 }
 
-export async function* fromArray<T>(
-  array: IterableIterator<T> | ReadonlyArray<T>
-): AsyncIterableIterator<T> {
-  for (const item of array) {
-    yield item
-  }
-}
-
 export function zip<input1, input2>(
   stream1: AsyncIterableIterator<input1>,
   stream2: AsyncIterableIterator<input2>

@@ -1,5 +1,5 @@
-import { fromArray } from '.'
 import assign from './assign'
+import fromArray from './from-array'
 
 describe('assign', () => {
   it('should call the property with single value', async () => {
