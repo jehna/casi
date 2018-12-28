@@ -1,16 +1,3 @@
-export async function assign<T>(
-  object: any,
-  property: string,
-  iterator: AsyncIterableIterator<T>
-): Promise<void> {
-  const target = object[property]
-  const setter =
-    typeof target === 'function' ? target : v => (object[property] = v)
-  for await (let result of iterator) {
-    setter(result)
-  }
-}
-
 export async function* scan<In, Out>(
   initialValue: Out,
   callback: (currentValue: Out, input: In) => Out,
