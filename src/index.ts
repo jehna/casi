@@ -1,16 +1,3 @@
-export async function* map<T, K>(
-  mapper: ((input: T) => K) | K,
-  iterator: AsyncIterableIterator<T>
-): AsyncIterableIterator<K> {
-  for await (let result of iterator) {
-    if (mapper instanceof Function) {
-      yield await mapper(result)
-    } else {
-      yield mapper
-    }
-  }
-}
-
 export async function* filter<T>(
   callback: (input: T) => boolean,
   iterator: AsyncIterableIterator<T>
