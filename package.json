@@ -1,7 +1,7 @@
 {
   "name": "casi",
-  "version": "0.1.0",
-  "main": "index.js",
+  "version": "0.1.1",
+  "main": "build/casi.js",
   "license": "MIT",
   "scripts": {
     "test": "jest",
