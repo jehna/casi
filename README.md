@@ -6,11 +6,16 @@ A collection of helper functions for working with [JavaScript Asynchronous Itera
 
 ## Getting started
 
-This project is not yet available on NPM, but when it is, you can install it to
-your project by running:
+You can install casi to your project by typing:
 
 ```shell
 yarn add casi
+```
+
+or if you use npm:
+
+```shell
+npm install casi --save
 ```
 
 This installs casi as a dependency to your project and you can require the
