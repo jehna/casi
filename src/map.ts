@@ -1,7 +1,7 @@
 import { curry } from './utils'
 
 export async function* _map<T, K>(
-  mapper: ((input: T) => K) | K,
+  mapper: ((input: T) => K | Promise<K>) | K,
   iterator: AsyncIterableIterator<T>
 ): AsyncIterableIterator<K> {
   for await (let result of iterator) {
@@ -15,10 +15,10 @@ export async function* _map<T, K>(
 
 type map = {
   <T, K>(
-    mapper: ((input: T) => K) | K,
+    mapper: ((input: T) => K | Promise<K>) | K,
     iterator: AsyncIterableIterator<T>
   ): AsyncIterableIterator<K>
-  <T, K>(mapper: ((input: T) => K) | K): (
+  <T, K>(mapper: ((input: T) => K | Promise<K>) | K): (
     iterator: AsyncIterableIterator<T>
   ) => AsyncIterableIterator<K>
 }
