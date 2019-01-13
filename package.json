@@ -1,6 +1,6 @@
 {
   "name": "casi",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "main": "build/casi.js",
   "license": "MIT",
   "scripts": {
